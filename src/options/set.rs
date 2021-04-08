@@ -127,6 +127,7 @@ pub fn set_options(
             color_only,
             commit_decoration_style,
             commit_style,
+            commit_regex,
             file_added_label,
             file_copied_label,
             file_decoration_style,

@@ -23,6 +23,7 @@ pub struct Config {
     pub background_color_extends_to_terminal_width: bool,
     pub commit_style: Style,
     pub color_only: bool,
+    pub commit_regex: Regex,
     pub decorations_width: cli::Width,
     pub error_exit_code: i32,
     pub file_added_label: String,
@@ -133,6 +134,16 @@ impl From<cli::Opt> for Config {
                 .map(|s| s.parse::<f64>().unwrap_or(0.0))
                 .unwrap_or(0.0);
 
+        let commit_regex = Regex::new(&opt.commit_regex).unwrap_or_else(|_| {
+            eprintln!(
+                "Invalid commit-regex: {}. \
+                 The value must be a valid Rust regular expression. \
+                 See https://docs.rs/regex.",
+                opt.commit_regex
+            );
+            process::exit(1);
+        });
+
         let tokenization_regex = Regex::new(&opt.tokenization_regex).unwrap_or_else(|_| {
             eprintln!(
                 "Invalid word-diff-regex: {}. \
@@ -182,6 +193,7 @@ impl From<cli::Opt> for Config {
                 .background_color_extends_to_terminal_width,
             commit_style,
             color_only: opt.color_only,
+            commit_regex,
             decorations_width: opt.computed.decorations_width,
             error_exit_code: 2, // Use 2 for error because diff uses 0 and 1 for non-error.
             file_added_label,

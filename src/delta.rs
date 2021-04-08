@@ -111,7 +111,7 @@ impl<'a> StateMachine<'a> {
                 self.source = detect_source(&line);
             }
 
-            let mut handled_line = if line.starts_with("commit ") {
+            let mut handled_line = if self.config.commit_regex.is_match(line) {
                 self.handle_commit_meta_header_line()?
             } else if line.starts_with("diff ") {
                 self.handle_file_meta_diff_line()?
